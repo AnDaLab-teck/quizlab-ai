@@ -16,14 +16,14 @@ export default async function handler(request, response) {
     try {
         const { topic, level, difficulty, numQuestions } = request.body;
         
-        // Qui implementerai la chiamata a Gemini AI
+        // Implementazione della chiamata a Gemini AI
         // Per ora restituiamo un quiz mock come esempio
         const mockQuiz = {
             title: `Quiz su ${topic}`,
             questions: [
                 {
-                    type: 'multipleChoice',
-                    text: `Domanda esempio su ${topic}`,
+                    id: Date.now(),
+                    text: `Domanda esempio su ${topic} (${difficulty})`,
                     answers: [
                         { text: "Risposta corretta", correct: true },
                         { text: "Risposta errata 1", correct: false },
