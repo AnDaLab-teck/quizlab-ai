@@ -1,0 +1,14 @@
+{
+  "name": "quizlab-ai",
+  "version": "1.0.0",
+  "description": "Applicazione per creare e gestire quiz educativi",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0"
+  },
+  "devDependencies": {
+    "vercel": "^28.4.0"
+  }
+}
