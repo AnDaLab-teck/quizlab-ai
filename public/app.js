@@ -1,6 +1,6 @@
-// Configurazione Supabase
-const SUPABASE_URL = 'https://creative-parfait-cc90e9.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWF0aXZlLXBhcmZhaXQtY2M5MGU5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDUwMjE5NDMsImV4cCI6MjAyMDU5Nzk0M30.abc123def456ghi789jkl012mno345pqr678stu901vwx234yz';
+// Configurazione Supabase con i tuoi valori reali
+const SUPABASE_URL = 'https://kjtkhpzxntqddtjgypqs.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqdGtocHp4bnRxZGR0amd5cHFzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcyNzkxMzMsImV4cCI6MjA3Mjg1NTEzM30.XUNFtnve24KOncGOZrObbGzZrHePNv8mqjgR6tDdFSw';
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
     console.error("Supabase configuration missing");
