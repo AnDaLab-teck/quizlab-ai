@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizLab AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Vista Autenticazione -->
+        <div id="auth-view" class="view active">
+            <div id="login-form">
+                <h1>Login</h1>
+                <input type="email" id="login-email" placeholder="Email...">
+                <input type="password" id="login-password" placeholder="Password...">
+                <button id="login-btn">Accedi</button>
+                <p class="auth-toggle-link" id="show-register">Non hai un account? Registrati</p>
+                <p class="auth-toggle-link" id="show-password-reset">Password dimenticata?</p>
+            </div>
+            <div id="register-form" style="display: none;">
+                <h1>Registrati</h1>
+                <input type="email" id="register-email" placeholder="Email...">
+                <input type="password" id="register-password" placeholder="Password...">
+                <button id="register-btn">Registrati</button>
+                <p class="auth-toggle-link" id="show-login-from-register">Hai già un account? Accedi</p>
+            </div>
+            <div id="password-reset-request-form" style="display: none;">
+                <h1>Recupera Password</h1>
+                <input type="email" id="reset-email" placeholder="La tua email di registrazione...">
+                <button id="password-reset-btn">Invia Istruzioni</button>
+                <p class="auth-toggle-link" id="show-login-from-reset">Torna al Login</p>
+            </div>
+        </div>
+        
+        <!-- Vista Aggiornamento Password -->
+        <div id="update-password-view" class="view">
+            <h1>Imposta Nuova Password</h1>
+            <input type="password" id="update-password-field" placeholder="Nuova password...">
+            <button id="update-password-btn">Salva Nuova Password</button>
+        </div>
+
+        <!-- Vista Menu Principale -->
+        <div id="main-menu-view" class="view">
+            <h1>QuizLab AI</h1>
+            <p id="welcome-message" style="text-align: center; font-size: 1rem;"></p>
+            <button id="go-to-creator-btn">Crea / Modifica Quiz</button>
+            <button id="go-to-dashboard-btn">Gestisci Sessioni Online</button>
+            <button id="logout-btn" class="danger-button">Logout</button>
+        </div>
+        
+        <!-- Vista Creazione Quiz -->
+        <div id="quiz-creator-view" class="view">
+            <h2>Editor Quiz</h2>
+            <button id="show-ai-generator-btn" class="secondary-button">✨ Genera Quiz con AI</button>
+            <hr style="border: 1px dashed var(--color-border); margin: 2rem 0;">
+            <input type="text" id="quiz-title" placeholder="Titolo del Quiz...">
+            <div class="checkbox-container"> 
+                <input type="checkbox" id="require-user-data"> 
+                <label for="require-user-data"><b>Attiva Modalità Valutazione</b></label> 
+            </div>
+            <div id="scoring-options" style="display:none;"> 
+                <h3>Impostazioni Punteggio</h3> 
+                <div class="radio-group-container"> 
+                    <input type="radio" id="score-mode-global" name="score-mode" value="global" checked> 
+                    <label for="score-mode-global">Unico</label> 
+                    <input type="number" id="global-score-value" value="1" style="width: 80px;"> 
+                    <input type="radio" id="score-mode-per-question" name="score-mode" value="perQuestion"> 
+                    <label for="score-mode-per-question">Per Domanda</label> 
+                </div> 
+            </div>
+            <div id="question-editor">
+                <h3>Dettagli Domanda</h3> 
+                <input type="hidden" id="question-id"> 
+                <textarea id="question-text" placeholder="Testo della domanda..."></textarea>
+                <div class="radio-group-container"> 
+                    <strong>Tipo:</strong> 
+                    <input type="radio" id="q-type-mc" name="question-type" value="multipleChoice" checked>
+                    <label for="q-type-mc">Multipla</label> 
+                    <input type="radio" id="q-type-open" name="question-type" value="openEnded">
+                    <label for="q-type-open">Aperta</label> 
+                </div>
+                <div class="question-score-container" style="display:none;"> 
+                    <label>Punteggio Domanda:</label> 
+                    <input type="number" class="question-score-input" value="1" style="width: 80px;"> 
+                </div>
+                <div id="multiple-choice-editor"> 
+                    <h4>Opzioni di Risposta</h4> 
+                    <div id="answers-container"></div> 
+                    <button id="add-answer-btn" class="add-button" style="width: auto; padding: 0.5rem 1rem; font-size: 0.8rem;">+ Aggiungi Risposta</button> 
+                </div>
+                <div id="open-ended-editor" style="display:none;"> 
+                    <h4>Risposta di Riferimento</h4> 
+                    <textarea id="open-ended-correct-answer" placeholder="Scrivi qui la risposta corretta..."></textarea> 
+                </div>
+                <button id="save-question-btn">Salva Domanda</button>
+            </div>
+            <div id="questions-list">
+                <h3>Elenco Domande</h3>
+                <ul id="questions-list-ul"></ul>
+            </div>
+            <button id="save-quiz-btn" class="secondary-button">Salva File .json</button>
+            <button id="back-to-main-from-creator" class="danger-button">Torna al Menu Principale</button>
+        </div>
+        
+        <!-- Vista Dashboard Insegnante -->
+        <div id="teacher-dashboard-view" class="view">
+            <h1>Dashboard Sessioni</h1> 
+            <input type="file" id="quiz-upload-input" accept=".json"> 
+            <button id="create-session-btn">Crea Sessione</button>
+            <div id="session-link-container" style="display: none;"> 
+                <h3>Link Sessione Pronto!</h3> 
+                <p id="session-link"></p> 
+                <button id="copy-link-btn">Copia Link</button> 
+            </div>
+            <div id="sessions-list-container"> 
+                <h2>Le Tue Sessioni</h2> 
+                <ul id="sessions-list"></ul> 
+            </div>
+            <button id="back-to-main-from-dashboard" class="danger-button">Torna al Menu Principale</button>
+        </div>
+
+        <!-- Vista Report Insegnante -->
+        <div id="teacher-report-view" class="view">
+            <h1>Risultati Sessione</h1>
+            <div id="report-content"></div>
+            <button id="back-to-dashboard-from-report" class="danger-button">Torna alla Dashboard</button>
+        </div>
+
+        <!-- Vista Caricamento Studente -->
+        <div id="student-loading-view" class="view">
+            <h1>Caricamento Quiz...</h1>
+            <p id="loading-status">Preparazione della sessione in corso</p>
+        </div>
+
+        <!-- Vista Form Dati Studente -->
+        <div id="user-data-form-view" class="view">
+            <h1>Identificazione</h1>
+            <p>Inserisci i tuoi dati per partecipare al quiz:</p>
+            <input type="text" id="user-name" placeholder="Nome...">
+            <input type="text" id="user-surname" placeholder="Cognome...">
+            <input type="text" id="user-class" placeholder="Classe...">
+            <button id="start-quiz-btn">Inizia Quiz</button>
+        </div>
+
+        <!-- Vista Player Quiz -->
+        <div id="quiz-player-view" class="view">
+            <h1 id="game-progress">Domanda 1 di 10</h1>
+            <p id="game-question-text">Testo della domanda...</p>
+            <div id="game-answers"></div>
+            <p id="game-feedback" class="success-message"></p>
+            <button id="next-question-btn" style="display: none;">Prossima Domanda</button>
+            <button id="end-quiz-btn" class="danger-button" style="display: none;">Termina Quiz</button>
+        </div>
+
+        <!-- Vista Report Studente -->
+        <div id="student-report-view" class="view">
+            <h1>Quiz Completato!</h1>
+            <p>Grazie per aver completato il quiz.</p>
+            <button onclick="window.location.href = window.location.origin + window.location.pathname">Torna alla Home</button>
+        </div>
+    </div>
+    
+    <!-- Modale Generatore AI -->
+    <div id="ai-generator-modal" class="modal">
+        <div class="modal-content">
+            <h2>Genera Quiz con AI</h2>
+            <input type="text" id="ai-topic" placeholder="Argomento...">
+            <select id="ai-level">
+                <option value="scuola primaria">Scuola Primaria</option>
+                <option value="scuola secondaria">Scuola Secondaria</option>
+                <option value="università">Università</option>
+            </select>
+            <select id="ai-difficulty">
+                <option value="facile">Facile</option>
+                <option value="medio">Medio</option>
+                <option value="difficile">Difficile</option>
+            </select>
+            <input type="number" id="ai-num-questions" value="5" min="1" max="15">
+            <button id="generate-quiz-btn">Genera</button>
+            <button id="close-ai-modal-btn" class="secondary-button">Annulla</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
