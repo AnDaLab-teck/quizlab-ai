@@ -411,10 +411,12 @@ async function generateQuizWithAI() {
     
     const generateBtn = document.getElementById('generate-quiz-btn');
     const originalText = generateBtn.textContent;
+    const modal = document.getElementById('ai-generator-modal');
     
     try {
         generateBtn.disabled = true;
         generateBtn.innerHTML = '<span class="loading-spinner"></span> GENERAZIONE...';
+        modal.classList.add('active'); // Mostra il modale
 
         const requestBody = {
             topic: topic,
@@ -454,6 +456,7 @@ async function generateQuizWithAI() {
     } finally {
         generateBtn.disabled = false;
         generateBtn.textContent = originalText;
+        modal.classList.remove('active'); // Nascondi il modale
     }
 }
 
